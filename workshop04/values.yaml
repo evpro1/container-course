@@ -1,0 +1,27 @@
+
+replicaCount: 1
+
+nameOverride: ""
+fullnameOverride: ""
+
+image:
+  repository: balanus/weatherapp
+  tag: fixedv1
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+
+deployment: 
+  contianerPort: 3000
+
+APP_ID: ecbd92ff90840c3a36dad8d16f7f7fb2
+APP_DEFAULT_CITY: Japan
+
+productionEnv: true
+productionReplicaCount: 2
+
+gatewayhostname: "jp.68.183.247.100.nip.io"
+gatewayport: 80

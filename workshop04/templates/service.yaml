@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "weatherapp.fullname" . }}
+  labels:
+    app: {{ template "weatherapp.name" . }}
+    chart: {{ template "weatherapp.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.deployment.contianerPort }}
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "weatherapp.name" . }}
+    release: {{ .Release.Name }}

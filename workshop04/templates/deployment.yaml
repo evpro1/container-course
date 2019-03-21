@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "weatherapp.fullname" . }}
+  labels:
+    app: {{ template "weatherapp.name" . }}
+    chart: {{ template "weatherapp.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ template "weatherapp.replicaCount" .}}
+  selector:
+    matchLabels:
+      app: {{ template "weatherapp.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "weatherapp.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: APP_ID
+            value: {{.Values.APP_ID}}
+          - name: APP_DEFAULT_CITY
+            value: {{ default "Singapore" .Values.APP_DEFAULT_CITY }}
+          ports:
+            - name: http
+              containerPort: {{.Values.deployment.contianerPort}}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
